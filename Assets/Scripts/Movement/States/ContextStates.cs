@@ -1,0 +1,141 @@
+using UnityEngine;
+
+public class Grounded : State<PlayerInfo>
+{
+    private float jumpCost = 10f;
+    private float slideCost = 10f;
+    public Grounded(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
+    {
+    }
+
+    protected override void OnEnter()
+    {
+        _info.Physics.Friction = _info.Val.GroundFriction;
+    }
+
+    protected override void OnExit()
+    {
+        _info.Timers.CayoteTime.Reset(_info.Val.CayoteTime);
+    }
+
+    protected override State<PlayerInfo> Transition()
+    {
+        if (!_info.Context.IsGrounded)
+        {
+            if (_info.Context.LeftWall || _info.Context.RightWall)
+            {
+                return Machine.GetStateFromType<Walled>();
+            }
+            else
+            {
+                
+                return Machine.GetStateFromType<Airborne>();
+            }
+        }
+        else
+        {
+            if (_info.Input.JumpPressed)
+            {
+                return Machine.GetStateFromType<Jumping>();
+            }
+
+            else if (_info.Input.AttackPressed && _info.Timers.DashCooldown.Done)
+            {
+                return Machine.GetStateFromType<Dash>();
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+    
+    protected override State<PlayerInfo> GetInitialState()
+    {
+        return Machine.GetStateFromType<Idle>();
+    }
+
+    protected override void OnUpdate(float deltaTime) { }
+    protected override void OnFixedUpdate(float deltaTime) { }
+}
+
+public class Airborne : State<PlayerInfo>
+{
+    public Airborne(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
+    {
+    }
+
+    protected override void OnEnter()
+    {
+        _info.Physics.Friction = _info.Val.AirFriction;
+        
+    }
+    
+    protected override void OnExit() { }
+
+    protected override State<PlayerInfo> Transition()
+    {
+        if(_info.Context.IsGrounded) return Machine.GetStateFromType<Grounded>();
+        else if ((_info.Context.LeftWall || _info.Context.RightWall) && ActiveChild != Machine.GetStateFromType<Jumping>())
+        {
+            return Machine.GetStateFromType<Walled>();
+        }
+        else
+        {
+            if (_info.Input.JumpPressed && !_info.Timers.CayoteTime.Done)
+            {
+                return Machine.GetStateFromType<Jumping>();
+            }
+            else if (_info.Guard.Dash)
+            {
+                return Machine.GetStateFromType<Dash>();
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+    protected override State<PlayerInfo> GetInitialState() => Machine.GetStateFromType<Falling>();
+    protected override void OnUpdate(float deltaTime) { }
+    protected override void OnFixedUpdate(float deltaTime) { }
+}
+
+public class Walled : HorizontalMove
+{
+    public Walled(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
+    {
+        moveSpeed = 1;
+    }
+
+    protected override void OnEnter()
+    {
+    }
+    
+    protected override void OnExit() { }
+
+    protected override State<PlayerInfo> Transition()
+    {
+        if(_info.Context.IsGrounded) return Machine.GetStateFromType<Grounded>();
+        else if (_info.Context.LeftWall || _info.Context.RightWall)
+        {
+            if (_info.Input.JumpPressed)
+            {
+                return Machine.GetStateFromType<WallJump>();
+            }
+            else
+            {
+                if (_info.Physics.Rigidbody2D.velocity.y < 0) return Machine.GetStateFromType<WallSliding>();
+                return null; 
+            }
+        }
+        else
+        {
+            return Machine.GetStateFromType<Airborne>();
+        }
+    }
+    
+    protected override State<PlayerInfo> GetInitialState() => null;
+
+    protected override void OnUpdate(float deltaTime) { }
+}

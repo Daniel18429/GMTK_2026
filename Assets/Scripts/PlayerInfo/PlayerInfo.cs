@@ -1,0 +1,154 @@
+using System;
+using UnityEngine;
+
+
+[System.Serializable]
+public class PlayerInfo
+{
+    public PlayerInput Input;
+    public PlayerContext Context;
+    public PlayerPhysics Physics;
+    public PlayerTimers Timers;
+    public Guards Guard;
+    
+    public GameObject Player;
+    
+    public PlayerValues Val { get; private set; }
+    
+    public PlayerInfo(GameObject gameObject, PlayerValues values)
+    {
+        Player = gameObject;
+        Physics = new PlayerPhysics(gameObject.GetComponent<Rigidbody2D>());
+        Input = new PlayerInput();
+        Context = new PlayerContext();
+        Timers = new PlayerTimers();
+        Val = values;
+        Guard = new Guards(this);
+    }
+
+    public void Init()
+    {
+        Context.Init();
+        Input.Start(Player);
+    }
+
+    public void FixedUpdate(float deltaTime)
+    {
+        Physics.PhysicsUpdate(deltaTime);
+        Input.Reset();
+    }
+}
+
+public class Guards
+{
+    private PlayerInfo _info;
+    public Guards(PlayerInfo info)
+    {
+        _info = info;
+    }
+
+    public bool Dash => _info.Input.AttackPressed &&
+                           _info.Timers.DashCooldown.Done;
+    public bool SwordSwing => _info.Input.AttackPressed;
+}
+
+
+
+public class PlayerInput 
+{
+    public Vector2 mouseDir;
+    private Transform objToMouse;
+    public Vector2 MoveDirection; 
+    public bool JumpPressed;
+    public bool AttackPressed;
+    public Vector2 lookDir = Vector2.right;
+
+    public void Start(GameObject player)
+    {
+        objToMouse = player.transform;
+    }
+
+    public void CacheInput(Vector2 moveDirection, bool jumpPressed, bool dashPressed, bool slidePressed)
+    {
+        MoveDirection = moveDirection;
+        if(!JumpPressed) JumpPressed = jumpPressed;
+        if (!AttackPressed) AttackPressed = dashPressed;
+        
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = 0;
+        mouseDir = (mouseWorldPos - objToMouse.position).normalized;
+
+        if (moveDirection.x != 0)
+        {
+            lookDir.x = Mathf.Sign(moveDirection.x);
+        }
+    }
+
+    public void Reset()
+    {
+        MoveDirection = Vector2.zero;
+        JumpPressed = false;
+        AttackPressed = false;
+    }
+}
+
+public class PlayerTimers
+{
+    public MyTimer CayoteTime = new MyTimer();
+    public MyTimer DashCooldown = new MyTimer();
+    public MyTimer AttackCooldown = new MyTimer();
+}
+
+[Serializable]
+public class PlayerContext
+{
+    public bool IsGrounded;
+    public bool OnWall;
+    public bool LeftWall;
+    public bool RightWall;
+    public RaycastHit2D GroundHit;
+    public RaycastHit2D WallHit;
+    public Vector2 GroundNormal;
+    public Vector2 WallNormal;
+    public LayerMask CollisionMask;
+
+    public PlayerContext()
+    {
+    }
+
+    public void Init()
+    {
+        CollisionMask = LayerMask.GetMask("Ground","Wall");
+    }
+
+    public void UpdateContext(GameObject gameObject)
+    {
+        CollisionMask = LayerMask.GetMask("Ground");
+        IsGrounded = OnWall = LeftWall = RightWall = false;
+        GroundNormal = WallNormal = Vector2.zero;
+        float radius = gameObject.GetComponent<CircleCollider2D>().radius;
+        float radiusMargin = 0.99f;
+        float distance = (1 - radiusMargin) * 2;
+        GroundHit = Physics2D.CircleCast(gameObject.transform.position, radius * radiusMargin, Vector2.down, distance, CollisionMask);
+        if (GroundHit.collider != null)
+        {
+            IsGrounded = true;
+            GroundNormal = GroundHit.normal;
+        }
+
+        WallHit = Physics2D.CircleCast(gameObject.transform.position, radius * radiusMargin, Vector2.right, distance, CollisionMask);
+        if (WallHit.collider != null)
+        {
+            RightWall = true;
+            WallNormal = WallHit.normal;
+        }
+
+        WallHit = Physics2D.CircleCast(gameObject.transform.position, radius * radiusMargin, Vector2.left, distance, CollisionMask);
+        if (WallHit.collider != null)
+        {
+            LeftWall = true;
+            WallNormal = WallHit.normal;
+        }
+        
+    }
+}
