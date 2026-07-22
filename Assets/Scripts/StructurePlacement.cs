@@ -4,7 +4,6 @@ using System;
 public class StructurePlacement : State<PlayerInfo>
 {
     
-    
     public StructurePlacement(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
     {
     }
@@ -34,8 +33,7 @@ public class StructurePlacement : State<PlayerInfo>
         placementPos.x = Mathf.RoundToInt(placementPos.x);
         placementPos.y = Mathf.RoundToInt(placementPos.y);
         _info.StructureData.DisplayObj.transform.position = placementPos;
+        _info.StructureData.DisplayObj.transform.
         
     }
-    
-    
 }

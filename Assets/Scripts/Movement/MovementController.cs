@@ -6,6 +6,8 @@ public class MovementController : MonoBehaviour
 {
     [SerializeField] public PlayerInfo _playerInfo { get; private set; }
     [SerializeField] private StateMachine<PlayerInfo> _stateMachine = new StateMachine<PlayerInfo>();
+    [SerializeField] private StructureObj structureObj;
+    [SerializeField] private GameObject displayObj;
     
     public void Start()
     {
@@ -13,11 +15,14 @@ public class MovementController : MonoBehaviour
         StateNode<PlayerInfo>[] children =
         {
             Node<Idle>(),
-            Node<Walking>()
+            Node<Walking>(),
+            Node<StructurePlacement>()
         };
         StateMachineBuilder<PlayerInfo> builder = new StateMachineBuilder<PlayerInfo>(_stateMachine, _playerInfo);
         builder.BuildTree(children);
-        _stateMachine.Initialize(_stateMachine.GetStateFromType<Idle>());
+        _stateMachine.Initialize(_stateMachine.GetStateFromType<StructurePlacement>());
+        _playerInfo.StructureData.Start(displayObj);
+        _playerInfo.StructureData.SetStruct(structureObj);
     } 
     
 

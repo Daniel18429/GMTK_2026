@@ -18,6 +18,7 @@ public class PlayerInfo
         Physics = new PlayerPhysics();
         Context = new PlayerContext();
         Values = values;
+        StructureData = new StructureData();
     }
 
     public void Init()
@@ -44,11 +45,19 @@ public class StructureData
     public StructureObj CurrentStructureObj;
     public Sprite CurrentStructureObjSprite;
 
+    public float Degrees;
+
     public void Start(GameObject displayObj)
     {
         DisplayObj = displayObj;
         DisplayObjRenderer = DisplayObj.GetComponent<SpriteRenderer>();
         CurrentStructureObjSprite = DisplayObj.GetComponent<SpriteRenderer>().sprite;
+    }
+
+    public void SetStruct(StructureObj s)
+    {
+        CurrentStructureObj = s;
+        CurrentStructureObjSprite = s.prefab.GetComponent<SpriteRenderer>().sprite;
     }
 }
 
