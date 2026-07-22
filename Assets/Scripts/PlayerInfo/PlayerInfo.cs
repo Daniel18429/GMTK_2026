@@ -6,50 +6,50 @@ using UnityEngine;
 public class PlayerInfo
 {
     public PlayerInput Input;
-    public PlayerContext Context;
+    private GameObject _player;
     public PlayerPhysics Physics;
-    public PlayerTimers Timers;
-    public Guards Guard;
-    
-    public GameObject Player;
-    
-    public PlayerValues Val { get; private set; }
-    
+    public PlayerValues Values;
+    public PlayerContext Context;
+    public StructureData StructureData;
     public PlayerInfo(GameObject gameObject, PlayerValues values)
     {
-        Player = gameObject;
-        Physics = new PlayerPhysics(gameObject.GetComponent<Rigidbody2D>());
+        _player = gameObject;
         Input = new PlayerInput();
+        Physics = new PlayerPhysics();
         Context = new PlayerContext();
-        Timers = new PlayerTimers();
-        Val = values;
-        Guard = new Guards(this);
+        Values = values;
     }
 
     public void Init()
     {
-        Context.Init();
-        Input.Start(Player);
+        Input.Init(_player);
+        Physics.Init(_player.GetComponent<Rigidbody2D>());
     }
 
     public void FixedUpdate(float deltaTime)
     {
         Physics.PhysicsUpdate(deltaTime);
-        Input.Reset();
     }
 }
 
-public class Guards
+public class PlayerContext
 {
-    private PlayerInfo _info;
-    public Guards(PlayerInfo info)
-    {
-        _info = info;
-    }
+    public bool AirportBoosted = false;
+}
 
-    public bool Dash => _info.Input.AttackPressed &&
-                           _info.Timers.DashCooldown.Done;
-    public bool SwordSwing => _info.Input.AttackPressed;
+public class StructureData
+{
+    public GameObject DisplayObj;
+    public SpriteRenderer DisplayObjRenderer;
+    public StructureObj CurrentStructureObj;
+    public Sprite CurrentStructureObjSprite;
+
+    public void Start(GameObject displayObj)
+    {
+        DisplayObj = displayObj;
+        DisplayObjRenderer = DisplayObj.GetComponent<SpriteRenderer>();
+        CurrentStructureObjSprite = DisplayObj.GetComponent<SpriteRenderer>().sprite;
+    }
 }
 
 
@@ -59,96 +59,36 @@ public class PlayerInput
     public Vector2 mouseDir;
     private Transform objToMouse;
     public Vector2 MoveDirection; 
-    public bool JumpPressed;
-    public bool AttackPressed;
+    public bool DashPressed;
     public Vector2 lookDir = Vector2.right;
-
-    public void Start(GameObject player)
+    public Vector2 mousePos = Vector2.zero;
+    public float distToMouse = 0f;
+    
+    public void Init(GameObject player)
     {
         objToMouse = player.transform;
     }
 
-    public void CacheInput(Vector2 moveDirection, bool jumpPressed, bool dashPressed, bool slidePressed)
+    public void CacheInput(Vector2 moveDirection, bool dashPressed)
     {
         MoveDirection = moveDirection;
-        if(!JumpPressed) JumpPressed = jumpPressed;
-        if (!AttackPressed) AttackPressed = dashPressed;
+        if (!DashPressed) DashPressed = dashPressed;
         
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0;
+        mousePos = mouseWorldPos;
+        distToMouse = Vector3.Distance(mousePos, objToMouse.position);
         mouseDir = (mouseWorldPos - objToMouse.position).normalized;
 
-        if (moveDirection.x != 0)
+        if (moveDirection != Vector2.zero)
         {
-            lookDir.x = Mathf.Sign(moveDirection.x);
+            lookDir = moveDirection.normalized;
         }
     }
 
     public void Reset()
     {
         MoveDirection = Vector2.zero;
-        JumpPressed = false;
-        AttackPressed = false;
-    }
-}
-
-public class PlayerTimers
-{
-    public MyTimer CayoteTime = new MyTimer();
-    public MyTimer DashCooldown = new MyTimer();
-    public MyTimer AttackCooldown = new MyTimer();
-}
-
-[Serializable]
-public class PlayerContext
-{
-    public bool IsGrounded;
-    public bool OnWall;
-    public bool LeftWall;
-    public bool RightWall;
-    public RaycastHit2D GroundHit;
-    public RaycastHit2D WallHit;
-    public Vector2 GroundNormal;
-    public Vector2 WallNormal;
-    public LayerMask CollisionMask;
-
-    public PlayerContext()
-    {
-    }
-
-    public void Init()
-    {
-        CollisionMask = LayerMask.GetMask("Ground","Wall");
-    }
-
-    public void UpdateContext(GameObject gameObject)
-    {
-        CollisionMask = LayerMask.GetMask("Ground");
-        IsGrounded = OnWall = LeftWall = RightWall = false;
-        GroundNormal = WallNormal = Vector2.zero;
-        float radius = gameObject.GetComponent<CircleCollider2D>().radius;
-        float radiusMargin = 0.99f;
-        float distance = (1 - radiusMargin) * 2;
-        GroundHit = Physics2D.CircleCast(gameObject.transform.position, radius * radiusMargin, Vector2.down, distance, CollisionMask);
-        if (GroundHit.collider != null)
-        {
-            IsGrounded = true;
-            GroundNormal = GroundHit.normal;
-        }
-
-        WallHit = Physics2D.CircleCast(gameObject.transform.position, radius * radiusMargin, Vector2.right, distance, CollisionMask);
-        if (WallHit.collider != null)
-        {
-            RightWall = true;
-            WallNormal = WallHit.normal;
-        }
-
-        WallHit = Physics2D.CircleCast(gameObject.transform.position, radius * radiusMargin, Vector2.left, distance, CollisionMask);
-        if (WallHit.collider != null)
-        {
-            LeftWall = true;
-            WallNormal = WallHit.normal;
-        }
-        
+        DashPressed = false;
     }
 }

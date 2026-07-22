@@ -12,20 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572419f1782d49e19dd2f65c87f0bc13, type: 3}
   m_Name: PlayerValues
   m_EditorClassIdentifier: 
-  cayoteTime: 0.4
-  jumpHeight: 7
-  jumpTime: 0.7
-  wallJumpHeight: 3
-  wallJumpTime: 0.3
-  wallJumpUncontrolledTime: 0.27
-  wallJumpVelocityX: 17
-  wallSlidingGravity: 3
-  maxWallSpeed: 5
-  groundWalkSpeed: 9
-  airWalkSpeed: 10
-  dashDistance: 8
-  dashTime: 0.2
-  upwardsGravityMultiplier: 1.4
-  fallingGravityMultiplier: 1.6
-  groundFriction: 0.6
-  airFriction: 0.02
+  walkSpeed: 3
