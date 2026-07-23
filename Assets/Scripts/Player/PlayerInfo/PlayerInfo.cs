@@ -9,14 +9,14 @@ public class PlayerInfo
     private GameObject _player;
     public PlayerPhysics Physics;
     public PlayerValues Values;
-    public PlayerContext Context;
     public StructureData StructureData;
+    public Context Context;
     public PlayerInfo(GameObject gameObject, PlayerValues values)
     {
         _player = gameObject;
         Input = new PlayerInput();
         Physics = new PlayerPhysics();
-        Context = new PlayerContext();
+        Context = new Context();
         Values = values;
         StructureData = new StructureData();
     }
@@ -30,12 +30,13 @@ public class PlayerInfo
     public void FixedUpdate(float deltaTime)
     {
         Physics.PhysicsUpdate(deltaTime);
+        Input.Reset();
     }
 }
 
-public class PlayerContext
+public class Context
 {
-    public bool AirportBoosted = false;
+    public GameObject currentBoostPad;
 }
 
 public class StructureData
@@ -44,7 +45,7 @@ public class StructureData
     public SpriteRenderer DisplayObjRenderer;
     public StructureObj CurrentStructureObj;
     public Sprite CurrentStructureObjSprite;
-
+    
     public float Degrees;
 
     public void Start(GameObject displayObj)
@@ -66,28 +67,34 @@ public class StructureData
 public class PlayerInput 
 {
     public Vector2 mouseDir;
-    private Transform objToMouse;
+    public Transform Player;
     public Vector2 MoveDirection; 
     public bool DashPressed;
     public Vector2 lookDir = Vector2.right;
     public Vector2 mousePos = Vector2.zero;
     public float distToMouse = 0f;
+    public bool BuildModePressed = false;
+    public bool PlaceStructure = false;
+    public bool BuildRotate = false;
     
     public void Init(GameObject player)
     {
-        objToMouse = player.transform;
+        Player = player.transform;
     }
 
-    public void CacheInput(Vector2 moveDirection, bool dashPressed)
+    public void CacheInput(Vector2 moveDirection, bool dashPressed, bool buildModePressed, bool placeStructure, bool buildRotate)
     {
         MoveDirection = moveDirection;
         if (!DashPressed) DashPressed = dashPressed;
+        if(!BuildModePressed) BuildModePressed = buildModePressed;
+        if(!PlaceStructure) PlaceStructure = placeStructure;
+        if(!BuildRotate) BuildRotate = buildRotate;
         
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0;
         mousePos = mouseWorldPos;
-        distToMouse = Vector3.Distance(mousePos, objToMouse.position);
-        mouseDir = (mouseWorldPos - objToMouse.position).normalized;
+        distToMouse = Vector3.Distance(mousePos, Player.position);
+        mouseDir = (mouseWorldPos - Player.position).normalized;
 
         if (moveDirection != Vector2.zero)
         {
@@ -99,5 +106,8 @@ public class PlayerInput
     {
         MoveDirection = Vector2.zero;
         DashPressed = false;
+        BuildModePressed = false;
+        PlaceStructure = false;
+        BuildRotate = false;
     }
 }

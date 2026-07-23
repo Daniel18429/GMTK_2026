@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Object = System.Object;
 
 public class StructurePlacement : State<PlayerInfo>
 {
@@ -24,7 +25,8 @@ public class StructurePlacement : State<PlayerInfo>
         Vector2 placementPos = Vector2.zero;
         if (_info.Input.distToMouse > 5f)
         {
-            placementPos = _info.Input.mouseDir * 5f;
+            Vector2 pos = (_info.Input.mouseDir * 5f) + new Vector2(_info.Input.Player.position.x, _info.Input.Player.position.y);
+            placementPos = pos;
         }
         else
         {
@@ -33,7 +35,18 @@ public class StructurePlacement : State<PlayerInfo>
         placementPos.x = Mathf.RoundToInt(placementPos.x);
         placementPos.y = Mathf.RoundToInt(placementPos.y);
         _info.StructureData.DisplayObj.transform.position = placementPos;
-        _info.StructureData.DisplayObj.transform.
-        
+        Quaternion rotation = Quaternion.Euler(0, 0, _info.StructureData.Degrees);
+        _info.StructureData.DisplayObj.transform.rotation = rotation;
+
+
+        if (_info.Input.PlaceStructure)
+        {
+            PlaceStructure(placementPos, rotation);
+        }
+    }
+
+    private void PlaceStructure(Vector3 placementPos, Quaternion placementRot)
+    {
+        GameObject go = GameObject.Instantiate(_info.StructureData.CurrentStructureObj.prefab, placementPos, placementRot);
     }
 }

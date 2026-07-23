@@ -1,8 +1,7 @@
-using UnityEngine;
-
+﻿using UnityEngine;
 using static Tree<PlayerInfo>;
 
-public class MovementController : MonoBehaviour
+public class PlacementController : MonoBehaviour
 {
     [SerializeField] public PlayerInfo _playerInfo { get; private set; }
     [SerializeField] private StateMachine<PlayerInfo> _stateMachine = new StateMachine<PlayerInfo>();
@@ -14,9 +13,8 @@ public class MovementController : MonoBehaviour
         _playerInfo = GetComponent<PlayerData>().PlayerInfo;
         StateNode<PlayerInfo>[] children =
         {
-            Node<Idle>(),
-            Node<Walking>(),
-            Node<StructurePlacement>()
+            Node<Building>(
+                Node<StructurePlacement>())
         };
         StateMachineBuilder<PlayerInfo> builder = new StateMachineBuilder<PlayerInfo>(_stateMachine, _playerInfo);
         builder.BuildTree(children);
@@ -28,15 +26,15 @@ public class MovementController : MonoBehaviour
 
     public void Update()
     {
-        Vector2 moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        _playerInfo.Input.CacheInput(moveDirection, 
-            Input.GetKey(KeyCode.Space));
         _stateMachine.Update(Time.deltaTime);
     }
 
     public void FixedUpdate()
     {
+        if (_playerInfo.Input.BuildRotate)
+        {
+            _playerInfo.StructureData.Degrees += 90f;
+        }
         _stateMachine.FixedUpdate(Time.fixedDeltaTime);
-        _playerInfo.FixedUpdate(Time.fixedDeltaTime);
     }
 }
