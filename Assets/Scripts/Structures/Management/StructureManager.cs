@@ -6,12 +6,6 @@ public class StructureManager : MonoBehaviour
     public static StructureManager Instance;
     private Vector3 boxPos;
     private Vector3 boxSize;
-    private GameObject displayObj;
-
-    private float signIntensity = 1;
-    private float numShifts = 7;
-    private float signMaxTime = 0.4f;
-    private float signTime;
 
     public void Start()
     {
@@ -24,40 +18,16 @@ public class StructureManager : MonoBehaviour
         {
             Instance = this;
         }
-
-        displayObj = new GameObject("Display");
-        displayObj.AddComponent<SpriteRenderer>();
     }
 
     public void Update()
     {
-        signTime -= Time.deltaTime;
-        if (signTime < 0)
-        {
-            displayObj.GetComponent<SpriteRenderer>().color = Color.white;
-        }
     }
-
-    public void RenderStructure(StructureObj obj, Vector3 position, Quaternion rotation)
-    {
-        Vector3 displayPos = position;
-        displayPos.z = -1;
-        if (signTime > 0)
-        {
-            Debug.Log("RAHH");
-            float amount = Mathf.Sin(Mathf.PI * signTime * numShifts / signMaxTime) * signTime * signIntensity / signMaxTime;
-            Debug.Log(amount);
-            displayPos.x += amount;
-        }
-        displayObj.transform.position = displayPos;
-        displayObj.transform.rotation = rotation;
-        displayObj.GetComponent<SpriteRenderer>().sprite = obj.sprite;
-    }
+    
 
     public bool Place(StructureObj structObj, Vector3 position, Quaternion rotation)
     {
         GameObject obj = structObj.prefab;
-        Debug.Log(obj.GetComponent<Collider2D>() == null);
         if (!MoneyManager.HasMoney(structObj.cost)) return false;
         
         
@@ -78,7 +48,6 @@ public class StructureManager : MonoBehaviour
         {
             Debug.Log(hit.gameObject.name);
             if (hit.transform.IsChildOf(obj.transform)) continue;
-            IncorrectPlacement();
             return true;
         }
         return false;
@@ -103,10 +72,5 @@ public class StructureManager : MonoBehaviour
         }
         return Vector2.zero;
     }
-
-    public void IncorrectPlacement()
-    {
-        signTime = signMaxTime;
-        displayObj.GetComponent<SpriteRenderer>().color = Color.red;
-    }
+    
 }

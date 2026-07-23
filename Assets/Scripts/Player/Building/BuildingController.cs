@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using static Tree<PlayerInfo>;
 
+
+
 public class BuildingController : MonoBehaviour
 {
     [SerializeField] public PlayerInfo _playerInfo { get; private set; }
@@ -15,12 +17,13 @@ public class BuildingController : MonoBehaviour
         _playerInfo.StructureData.SetStruct(structureObj);
         StateNode<PlayerInfo>[] children =
         {
-            Node<Building>(
-                Node<StructurePlacer>())
+            Node<BuildingIdle>(),
+            Node<Building>(),
+            Node<Editor>()
         };
         StateMachineBuilder<PlayerInfo> builder = new StateMachineBuilder<PlayerInfo>(_stateMachine, _playerInfo);
         builder.BuildTree(children);
-        _stateMachine.Initialize(_stateMachine.GetStateFromType<StructurePlacer>());
+        _stateMachine.Initialize(_stateMachine.GetStateFromType<BuildingIdle>());
     } 
     
 

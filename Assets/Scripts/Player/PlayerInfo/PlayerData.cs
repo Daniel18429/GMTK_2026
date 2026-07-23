@@ -18,7 +18,7 @@ public class PlayerData : MonoBehaviour
         Vector2 moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         PlayerInfo.Input.CacheInput(moveDirection, 
             Input.GetKey(KeyCode.Space), Input.GetKeyDown(KeyCode.E), 
-            Input.GetMouseButtonDown(0), Input.GetKeyDown(KeyCode.R));
+            Input.GetMouseButtonDown(0), Input.GetKeyDown(KeyCode.R), Input.GetKeyDown(KeyCode.Q));
     }
 
     public void FixedUpdate()

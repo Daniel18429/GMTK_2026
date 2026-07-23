@@ -63,7 +63,7 @@ public class StateMachine<T>
         {
             msg += temp[i] + "->";
         }
-        //Debug.Log(msg);
+        Debug.Log(msg);
     }
 
     
