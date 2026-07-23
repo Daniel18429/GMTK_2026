@@ -54,24 +54,31 @@ public class Editor : State<PlayerInfo>
     public Editor(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
     {
         textMesh = GameObject.Find("Player/Main Camera/Canvas/ObjDescription").GetComponent<TextMeshProUGUI>();
-        GameObject repairButton = GameObject.Instantiate(Resources.Load<GameObject>("UI/Button"), 
-            _info.Player.transform.Find("Main Camera").transform);
-        repairButton.transform.position = new Vector3(repairButton.transform.position.x, repairButton.transform.position.y, 0);
-        buttons.Add(repairButton.GetComponent<UpgradeButton>());
-        buttons[0].gameObject.SetActive(false);
+        for (int i = 0; i < 7; i++)
+        {
+            GameObject button = GameObject.Instantiate(Resources.Load<GameObject>("UI/Button"), 
+                _info.Player.transform.Find("Main Camera").transform);
+            button.transform.localPosition = new Vector3(6f, 4f - 1.5f*i, 10f);
+            buttons.Add(button.GetComponent<UpgradeButton>());
+            buttons[i].gameObject.SetActive(false);
+        }
+        textMesh.gameObject.SetActive(false);
     }
 
     protected override void OnEnter()
     {
         _info.Input.BuildModePressed = false;
         _info.Input.EditorModePressed = false;
-        structure = null;
+        NullifyStructure();
+        textMesh.gameObject.SetActive(true);
 
     }
 
     protected override void OnExit()
     {
         NullifyStructure();
+        
+        textMesh.gameObject.SetActive(false);
     }
 
     protected override State<PlayerInfo> Transition()
@@ -109,7 +116,8 @@ public class Editor : State<PlayerInfo>
                     UpgradeButton button = go.GetComponent<UpgradeButton>();
                     if(button != null)
                     {
-                        button.Click();
+                        button.Click(structure);
+                        SetButtons(structure.upgrades);
                     }
                     else
                     {
@@ -132,25 +140,30 @@ public class Editor : State<PlayerInfo>
     private void NullifyStructure()
     {
         structure = null;
-        textMesh.gameObject.SetActive(false);
+        textMesh.text = "Select structure to upgrade!";
         ClearButtons();
     }
 
     private void SetStructure(StructureParent s)
     {
         structure = s;
-        SetButtons();
-        textMesh.gameObject.SetActive(true);
+        SetButtons(s.upgrades);
         textMesh.text = structure.Description;
     }
 
-    private void SetButtons()
+    private void SetButtons(List<StructureUpgrade> upgrades)
     {
-        foreach (UpgradeButton button in buttons)
+        for (int i = 0; i < upgrades.Count; i++)
         {
-            button.gameObject.SetActive(true);
+            buttons[i].gameObject.SetActive(true);
+            buttons[i].OnClick = upgrades[i].UpgradeStructure;
+            string nameText = upgrades[i].Name;
+            if(upgrades[i].UpgradeLevel != 0) nameText += "(" + upgrades[i].UpgradeLevel.ToString() + ")";
+            buttons[i].Name.text = nameText;
+            string costText = "Cost: " + upgrades[i].Cost.ToString();
+            buttons[i].Cost.text = costText;
+            buttons[i].Description.text = upgrades[i].Description;
         }
-        buttons[0].OnClick = structure.upgrades[0].UpgradeStructure;
     }
 
     private void ClearButtons()

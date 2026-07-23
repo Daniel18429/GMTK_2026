@@ -2,9 +2,17 @@
 
 public class RepairUpgrade : StructureUpgrade
 {
-    public override bool UpgradeStructure()
+    public float RepairRate = 10f;
+
+    public RepairUpgrade()
     {
-        Debug.Log("RAHH");
-        return true;
+        Name = "Wind Clock";
+        Description = "Increases countdown of structure";
+        Cost = RepairRate;
+    }
+
+    public override void OnUpgrade(StructureParent structure)
+    {
+        structure.Repair(RepairRate);
     }
 }

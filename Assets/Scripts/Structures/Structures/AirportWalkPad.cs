@@ -14,6 +14,7 @@ public class AirportWalkPad : StructureParent
     public override void Start()
     {
         base.Start();
+        upgrades.Add(new WalkPadSpeedBoost());
         controller = GameObject.Find("Player").GetComponent<MovementController>();
         _boostDirection = this.gameObject.transform.up;
     }
@@ -32,5 +33,10 @@ public class AirportWalkPad : StructureParent
     {
         if(collision.CompareTag("Player") && controller._playerInfo.Context.currentBoostPad == this.gameObject) 
             controller._playerInfo.Context.currentBoostPad = null;
+    }
+
+    public void UpgradeBoost(float amount)
+    {
+        _boostSpeed += amount;
     }
 }

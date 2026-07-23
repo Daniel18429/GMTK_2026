@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 
-public delegate bool ButtonEvent();
+public delegate bool ButtonEvent(StructureParent structureParent);
 public class UpgradeButton : MonoBehaviour
 {
     public ButtonEvent OnClick;
@@ -11,33 +12,46 @@ public class UpgradeButton : MonoBehaviour
     private float numShifts = 7;
     private float signMaxTime = 0.4f;
     private float signTime;
+    public TextMeshProUGUI Name;
+    public TextMeshProUGUI Description;
+    public TextMeshProUGUI Cost;
+
+    private Color startColor;
 
     private Vector2 pos;
 
-    public void Start()
+    public void Awake()
     {
         pos = transform.position;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        Name = this.transform.Find("Canvas/Name").GetComponent<TextMeshProUGUI>();
+        Debug.Log(Name == null);
+        Debug.Log("AAAAAA");
+        Description = this.transform.Find("Canvas/Description").GetComponent<TextMeshProUGUI>();
+        Cost = this.transform.Find("Canvas/Cost").GetComponent<TextMeshProUGUI>();
+        startColor = spriteRenderer.color;
     }
 
     public void Update()
     {
         if (signTime > 0)
         {
+            pos = transform.position;
             Vector2 displayPos = pos;
             displayPos.x += ShakeAmount();
             transform.position = displayPos;
             signTime -= Time.deltaTime;
             if (signTime <= 0)
             {
-                spriteRenderer.color = Color.white;
+                spriteRenderer.color = startColor;
             }
         }
     }
 
-    public void Click()
+    public void Click(StructureParent structureParent)
     {
         if (OnClick == null) return;
-        bool success = OnClick.Invoke();
+        bool success = OnClick.Invoke(structureParent);
         if (!success)
         {
             ClickError();
@@ -47,6 +61,7 @@ public class UpgradeButton : MonoBehaviour
     public void ClickError()
     {
         spriteRenderer.color = Color.red;
+        signTime = signMaxTime;
     }
     
     private float ShakeAmount()

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MyTimer : MonoBehaviour
@@ -18,12 +19,12 @@ public class MyTimer : MonoBehaviour
 
     public void AdjustTime(float value)
     {
-        TimeRemaining += value;
+        if(TimeRemaining != Mathf.Infinity) TimeRemaining += value;
     }
     
     public void Tick(float deltaTime)
     {
-        TimeRemaining -= deltaTime *  _timeMultiplier;
+        AdjustTime(-deltaTime * _timeMultiplier);
     }
 
     public void Reset(float timeRemaining)
