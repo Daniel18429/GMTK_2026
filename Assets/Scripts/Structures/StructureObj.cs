@@ -9,4 +9,5 @@ public class StructureObj : ScriptableObject
     public float cost;
     [Header("Obj")]
     public GameObject prefab;
+    public Sprite sprite => prefab.GetComponent<SpriteRenderer>().sprite;
 }

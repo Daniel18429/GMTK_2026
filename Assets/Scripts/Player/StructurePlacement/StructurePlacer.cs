@@ -2,16 +2,24 @@ using UnityEngine;
 using System;
 using Object = System.Object;
 
-public class StructurePlacement : State<PlayerInfo>
+public class StructurePlacer : State<PlayerInfo>
 {
     
-    public StructurePlacement(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
+    public StructurePlacer(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
     {
     }
-    
-    protected override void OnEnter() { }
-    
-    protected override void OnExit() { }
+
+    protected override void OnEnter()
+    {
+        Debug.Log(_info.StructureData);
+        Debug.Log(_info.StructureData.DisplayObj);
+        _info.StructureData.DisplayObj.SetActive(true);
+    }
+
+    protected override void OnExit()
+    {
+        _info.StructureData.DisplayObj.SetActive(false);
+    }
 
     protected override State<PlayerInfo> Transition() => null;
     
@@ -21,7 +29,7 @@ public class StructurePlacement : State<PlayerInfo>
 
     protected override void OnFixedUpdate(float deltaTime)
     {
-        _info.StructureData.DisplayObjRenderer.sprite = _info.StructureData.CurrentStructureObjSprite;
+        _info.StructureData.DisplayObjRenderer.sprite = _info.StructureData.CurrentStructureObj.sprite;
         Vector2 placementPos = Vector2.zero;
         if (_info.Input.distToMouse > 5f)
         {
@@ -41,12 +49,8 @@ public class StructurePlacement : State<PlayerInfo>
 
         if (_info.Input.PlaceStructure)
         {
-            PlaceStructure(placementPos, rotation);
+            StructureManager.Instance.Place(_info.StructureData.CurrentStructureObj, placementPos, rotation);
         }
     }
-
-    private void PlaceStructure(Vector3 placementPos, Quaternion placementRot)
-    {
-        GameObject go = GameObject.Instantiate(_info.StructureData.CurrentStructureObj.prefab, placementPos, placementRot);
-    }
+    
 }

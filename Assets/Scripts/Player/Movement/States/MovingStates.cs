@@ -14,10 +14,8 @@ public class Idle : State<PlayerInfo>
 
     protected override State<PlayerInfo> Transition()
     {
-        Debug.Log("RAHHH");
         if (_info.Input.MoveDirection != Vector2.zero)
         {
-            Debug.Log("RAHH RAH HRAHHA");
             return Machine.GetStateFromType<Walking>();
         }
         else

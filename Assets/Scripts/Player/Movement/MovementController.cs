@@ -32,7 +32,6 @@ public class MovementController : MonoBehaviour
 
     public void FixedUpdate()
     {
-        Debug.Log("RAHHH");
         _stateMachine.FixedUpdate(Time.fixedDeltaTime);
     }
 }

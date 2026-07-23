@@ -39,12 +39,12 @@ public class Context
     public GameObject currentBoostPad;
 }
 
+[System.Serializable]
 public class StructureData
 {
-    public GameObject DisplayObj;
+    [SerializeField] public GameObject DisplayObj;
     public SpriteRenderer DisplayObjRenderer;
     public StructureObj CurrentStructureObj;
-    public Sprite CurrentStructureObjSprite;
     
     public float Degrees;
 
@@ -52,13 +52,11 @@ public class StructureData
     {
         DisplayObj = displayObj;
         DisplayObjRenderer = DisplayObj.GetComponent<SpriteRenderer>();
-        CurrentStructureObjSprite = DisplayObj.GetComponent<SpriteRenderer>().sprite;
     }
 
     public void SetStruct(StructureObj s)
     {
         CurrentStructureObj = s;
-        CurrentStructureObjSprite = s.prefab.GetComponent<SpriteRenderer>().sprite;
     }
 }
 

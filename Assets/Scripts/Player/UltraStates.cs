@@ -16,7 +16,7 @@
         return null;
     }
 
-    protected override State<PlayerInfo> GetInitialState() => Machine.GetStateFromType<StructurePlacement>();
+    protected override State<PlayerInfo> GetInitialState() => Machine.GetStateFromType<StructurePlacer>();
 
     protected override void OnUpdate(float deltaTime) { }
     protected override void OnFixedUpdate(float deltaTime) { }
