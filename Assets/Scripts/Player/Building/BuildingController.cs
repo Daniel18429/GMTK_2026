@@ -31,10 +31,6 @@ public class BuildingController : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (_playerInfo.Input.BuildRotate)
-        {
-            _playerInfo.StructureData.Degrees += 90f;
-        }
         _stateMachine.FixedUpdate(Time.fixedDeltaTime);
     }
 }

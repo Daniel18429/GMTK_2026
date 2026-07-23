@@ -4,7 +4,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class AirportWalkPad : Structure
+public class AirportWalkPad : StructureParent
 {
     private float _boostSpeed = 2.0f;
     private Vector2 _boostDirection;

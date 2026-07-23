@@ -29,11 +29,12 @@ public class StructurePlacer : State<PlayerInfo>
 
     protected override void OnFixedUpdate(float deltaTime)
     {
-        _info.StructureData.DisplayObjRenderer.sprite = _info.StructureData.CurrentStructureObj.sprite;
+        //_info.StructureData.DisplayObjRenderer.sprite = _info.StructureData.CurrentStructureObj.sprite;
         Vector2 placementPos = Vector2.zero;
-        if (_info.Input.distToMouse > 5f)
+        float maxPlacementDist = 2f;
+        if (_info.Input.distToMouse > maxPlacementDist)
         {
-            Vector2 pos = (_info.Input.mouseDir * 5f) + new Vector2(_info.Input.Player.position.x, _info.Input.Player.position.y);
+            Vector2 pos = (_info.Input.mouseDir * maxPlacementDist) + new Vector2(_info.Input.Player.position.x, _info.Input.Player.position.y);
             placementPos = pos;
         }
         else
@@ -42,9 +43,14 @@ public class StructurePlacer : State<PlayerInfo>
         }
         placementPos.x = Mathf.RoundToInt(placementPos.x);
         placementPos.y = Mathf.RoundToInt(placementPos.y);
-        _info.StructureData.DisplayObj.transform.position = placementPos;
+        
+        if (_info.Input.BuildRotate)
+        {
+            _info.StructureData.Degrees -= 90f;
+        }
+        
         Quaternion rotation = Quaternion.Euler(0, 0, _info.StructureData.Degrees);
-        _info.StructureData.DisplayObj.transform.rotation = rotation;
+        StructureManager.Instance.RenderStructure(_info.StructureData.CurrentStructureObj, placementPos, rotation);
 
 
         if (_info.Input.PlaceStructure)

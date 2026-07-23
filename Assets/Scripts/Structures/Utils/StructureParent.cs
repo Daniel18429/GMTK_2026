@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class Structure : MonoBehaviour
+public class StructureParent : MonoBehaviour
 {
     [SerializeField] protected float lifetime;
     private MyTimer _timer;
