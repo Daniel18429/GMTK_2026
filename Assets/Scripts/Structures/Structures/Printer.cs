@@ -1,7 +1,12 @@
-﻿namespace Structures.Structures
+﻿
+
+public class Printer : Producer
 {
-    public class Printer
+    public override void Start()
     {
-        
+        base.Start();
+        input = new Cost();
+        output = new Paper();
+        maxProduceCooldown = 1f;
     }
 }

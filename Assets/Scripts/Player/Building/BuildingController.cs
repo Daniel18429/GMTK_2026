@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using static Tree<PlayerInfo>;
-
+using System.Collections.Generic;
 
 
 public class BuildingController : MonoBehaviour
 {
     [SerializeField] public PlayerInfo _playerInfo { get; private set; }
     [SerializeField] private StateMachine<PlayerInfo> _stateMachine = new StateMachine<PlayerInfo>();
-    [SerializeField] private StructureObj structureObj;
+    [SerializeField] private List<StructureObj> structureObjs = new List<StructureObj>(); 
     [SerializeField] private GameObject displayObj;
     
     public void Start()
     {
         _playerInfo = GetComponent<PlayerData>().PlayerInfo;
         _playerInfo.StructureData.Start(displayObj);
-        _playerInfo.StructureData.SetStruct(structureObj);
+        _playerInfo.StructureData.SetStruct(structureObjs);
         StateNode<PlayerInfo>[] children =
         {
             Node<BuildingIdle>(),

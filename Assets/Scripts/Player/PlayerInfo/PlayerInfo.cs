@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -44,21 +45,18 @@ public class Context
 [System.Serializable]
 public class StructureData
 {
-    [SerializeField] public GameObject DisplayObj;
     public SpriteRenderer DisplayObjRenderer;
-    public StructureObj CurrentStructureObj;
-    
+    public List<StructureObj> StructureObjs;
+    public int currentObj = 0;
     public float Degrees;
 
     public void Start(GameObject displayObj)
     {
-        DisplayObj = displayObj;
-        DisplayObjRenderer = DisplayObj.GetComponent<SpriteRenderer>();
     }
 
-    public void SetStruct(StructureObj s)
+    public void SetStruct(List<StructureObj> s)
     {
-        CurrentStructureObj = s;
+        StructureObjs = s;
     }
 }
 
@@ -77,13 +75,14 @@ public class PlayerInput
     public bool Interact = false;
     public bool EditorModePressed = false;
     public bool BuildRotate = false;
+    public int ScrollWheel = 0;
     
     public void Init(GameObject player)
     {
         Player = player.transform;
     }
 
-    public void CacheInput(Vector2 moveDirection, bool dashPressed, bool buildModePressed, bool placeStructure, bool buildRotate, bool editorModePressed)
+    public void CacheInput(Vector2 moveDirection, bool dashPressed, bool buildModePressed, bool placeStructure, bool buildRotate, bool editorModePressed, bool scrollWheel)
     {
         MoveDirection = moveDirection;
         if (!DashPressed) DashPressed = dashPressed;
@@ -91,6 +90,7 @@ public class PlayerInput
         if(!Interact) Interact = placeStructure;
         if(!BuildRotate) BuildRotate = buildRotate;
         if(!EditorModePressed) EditorModePressed = editorModePressed;
+        if (scrollWheel) ScrollWheel = 1;
         
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0;
@@ -112,6 +112,7 @@ public class PlayerInput
         Interact = false;
         BuildRotate = false;
         EditorModePressed = false;
+        ScrollWheel = 0;
     }
 
     public GameObject GetObjectClicked()

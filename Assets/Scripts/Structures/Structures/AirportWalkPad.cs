@@ -20,6 +20,7 @@ public class AirportWalkPad : StructureParent
     }
     public void OnTriggerStay2D(Collider2D collision)
     {
+        Item item = collision.GetComponent<Item>();
         if (collision.CompareTag("Player") && 
             (controller._playerInfo.Context.currentBoostPad == null 
              || controller._playerInfo.Context.currentBoostPad == this.gameObject))
@@ -27,12 +28,24 @@ public class AirportWalkPad : StructureParent
             controller._playerInfo.Physics.ExternalVelocity = _boostDirection * _boostSpeed;
             controller._playerInfo.Context.currentBoostPad = this.gameObject;
         }
+        else if (item &&
+                 (item.boostPad == null || item.boostPad == this.gameObject))
+        {
+            collision.GetComponent<Item>().Physics.velocity += _boostDirection * _boostSpeed;
+            item.boostPad = this.gameObject;
+        }
     }
 
     public void OnTriggerExit2D(Collider2D collision)
     {
+        
+        Item item = collision.GetComponent<Item>();
         if(collision.CompareTag("Player") && controller._playerInfo.Context.currentBoostPad == this.gameObject) 
             controller._playerInfo.Context.currentBoostPad = null;
+        if (item && item.boostPad == this.gameObject)
+        {
+            item.boostPad = null;
+        }
     }
 
     public void UpgradeBoost(float amount)

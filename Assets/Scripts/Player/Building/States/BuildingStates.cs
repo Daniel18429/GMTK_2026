@@ -186,6 +186,8 @@ public class Building : State<PlayerInfo>
     private float numShifts = 7;
     private float signMaxTime = 0.4f;
     private float signTime;
+
+    public int currentObj = 0;
     
     
     public Building(StateMachine<PlayerInfo> machine, PlayerInfo info, State<PlayerInfo> parent) : base(machine, info, parent)
@@ -203,7 +205,6 @@ public class Building : State<PlayerInfo>
 
     protected override void OnExit()
     {
-        _info.StructureData.DisplayObj.SetActive(false);
         displayObj.SetActive(false);
     }
 
@@ -229,7 +230,12 @@ public class Building : State<PlayerInfo>
 
     protected override void OnFixedUpdate(float deltaTime)
     {
-
+        if (_info.Input.ScrollWheel == 1)
+        {
+            _info.StructureData.currentObj++;
+            _info.StructureData.currentObj %= _info.StructureData.StructureObjs.Count;
+            Debug.Log("RAHHHHH");
+        }
         if (signTime > 0)
         {
             signTime -= deltaTime;
@@ -241,7 +247,7 @@ public class Building : State<PlayerInfo>
         
         //_info.StructureData.DisplayObjRenderer.sprite = _info.StructureData.CurrentStructureObj.sprite;
         Vector2 placementPos = Vector2.zero;
-        float maxPlacementDist = 2f;
+        float maxPlacementDist = 4f;
         if (_info.Input.distToMouse > maxPlacementDist)
         {
             Vector2 pos = (_info.Input.mouseDir * maxPlacementDist) + new Vector2(_info.Input.Player.position.x, _info.Input.Player.position.y);
@@ -264,7 +270,8 @@ public class Building : State<PlayerInfo>
 
         if (_info.Input.Interact)
         {
-            bool placed = StructureManager.Instance.Place(_info.StructureData.CurrentStructureObj, placementPos, rotation);
+            StructureObj s = _info.StructureData.StructureObjs[_info.StructureData.currentObj];
+            bool placed = StructureManager.Instance.Place(s, placementPos, rotation);
             if (placed)
             {
             }
@@ -289,7 +296,8 @@ public class Building : State<PlayerInfo>
         displayPos.x += ShakeAmount();
         displayObj.transform.position = displayPos;
         displayObj.transform.rotation = rotation;
-        displaySpriteRenderer.sprite = _info.StructureData.CurrentStructureObj.sprite;
+        StructureObj s = _info.StructureData.StructureObjs[_info.StructureData.currentObj];
+        displaySpriteRenderer.sprite = s.sprite;
     }
 
     private float ShakeAmount()

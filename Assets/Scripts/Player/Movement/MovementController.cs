@@ -21,8 +21,6 @@ public class MovementController : MonoBehaviour
         StateMachineBuilder<PlayerInfo> builder = new StateMachineBuilder<PlayerInfo>(_stateMachine, _playerInfo);
         builder.BuildTree(children);
         _stateMachine.Initialize(_stateMachine.GetStateFromType<Moving>());
-        _playerInfo.StructureData.Start(displayObj);
-        _playerInfo.StructureData.SetStruct(structureObj);
     }
 
     public void Update()
