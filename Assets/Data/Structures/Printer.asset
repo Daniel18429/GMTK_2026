@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Printer
   m_EditorClassIdentifier: 
   cost: 0
-  prefab: {fileID: 0}
+  prefab: {fileID: 7543445031742158178, guid: cd324c2e03f45be468092d95832d0661, type: 3}

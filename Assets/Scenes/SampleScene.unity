@@ -638,7 +638,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &1194522132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -651,7 +651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03156e9cacfc499aa7eaa6b1f13c489a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  structureObj: {fileID: 11400000, guid: e36cd1d20504e465082de8aa904f522b, type: 2}
+  structureObj: {fileID: 11400000, guid: ab691e3bc91e35d4eb9d3f3d6dd81eb0, type: 2}
   displayObj: {fileID: 0}
 --- !u!212 &1194522134
 SpriteRenderer:
@@ -713,8 +713,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1194522129}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.2022824, y: 0.19372155, z: -4.331852}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -746,7 +746,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270d36e179c448e387a716679b7031a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  structureObj: {fileID: 11400000, guid: e36cd1d20504e465082de8aa904f522b, type: 2}
+  structureObjs:
+  - {fileID: 11400000, guid: e36cd1d20504e465082de8aa904f522b, type: 2}
+  - {fileID: 11400000, guid: ab691e3bc91e35d4eb9d3f3d6dd81eb0, type: 2}
   displayObj: {fileID: 0}
 --- !u!61 &1194522138
 BoxCollider2D:
