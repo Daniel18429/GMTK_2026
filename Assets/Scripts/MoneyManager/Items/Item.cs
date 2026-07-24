@@ -2,18 +2,21 @@
 using UnityEngine;
 public class Item : MonoBehaviour
 {
-    public Resource resource;
+    public Resource resource { get; protected set; }
     public ItemPhysics Physics;
 
     public GameObject boostPad;
 
-    public void Start()
+    public virtual void Start()
     {
         Physics = new ItemPhysics(this.GetComponent<Rigidbody2D>());
     }
-    
-    
 
+    public void Consume()
+    {
+        Destroy(this.gameObject);
+    }
+    
     public void FixedUpdate()
     {
         Physics.PhysicsUpdate();

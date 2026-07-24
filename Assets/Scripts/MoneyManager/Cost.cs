@@ -2,10 +2,10 @@
 
 public class Cost
 {
-    public List<Resource> costs;
 
-    public bool HasCost(Inventory inventory)
+    public Cost(Dictionary<Resource, int> c)
     {
-        return true;
+        this.costs = c;
     }
+    public Dictionary<Resource, int> costs;
 }

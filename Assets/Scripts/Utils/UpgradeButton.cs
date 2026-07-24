@@ -25,8 +25,6 @@ public class UpgradeButton : MonoBehaviour
         pos = transform.position;
         spriteRenderer = GetComponent<SpriteRenderer>();
         Name = this.transform.Find("Canvas/Name").GetComponent<TextMeshProUGUI>();
-        Debug.Log(Name == null);
-        Debug.Log("AAAAAA");
         Description = this.transform.Find("Canvas/Description").GetComponent<TextMeshProUGUI>();
         Cost = this.transform.Find("Canvas/Cost").GetComponent<TextMeshProUGUI>();
         startColor = spriteRenderer.color;

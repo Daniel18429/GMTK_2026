@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 5522439328583102376}
   - component: {fileID: 7836065782730971561}
-  - component: {fileID: 4115604187186975319}
+  - component: {fileID: -521940495942880333}
   - component: {fileID: -8465912133389803381}
   - component: {fileID: 2007853515810736751}
   m_Layer: 0
   m_Name: Paper
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4115604187186975319
+--- !u!114 &-521940495942880333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1906135204105178631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf8e3b73be1b4ae5ba7ef050a26c4d39, type: 3}
+  m_Script: {fileID: 11500000, guid: b97341a699ae413c9876943cb30a038d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   boostPad: {fileID: 0}
